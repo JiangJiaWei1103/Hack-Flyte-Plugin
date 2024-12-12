@@ -16,7 +16,7 @@ from flytekit.extend.backend.utils import convert_to_flyte_phase, get_agent_secr
 from flytekit.models.literals import LiteralMap
 from flytekit.models.task import TaskTemplate, TaskExecutionMetadata
 
-from mock_slurm import SlurmCtl
+from .mock_slurm import SlurmCtl
 
 
 sctl = SlurmCtl()
@@ -41,9 +41,9 @@ class SlurmAgent(AsyncAgentBase):
     def create(
         self,
         task_template: TaskTemplate,
-        output_prefix: str,
-        inputs: Optional[LiteralMap],
-        task_execution_metadata: Optional[TaskExecutionMetadata],
+        # output_prefix: str,
+        inputs: Optional[LiteralMap] = None,
+        # task_execution_metadata: Optional[TaskExecutionMetadata],
         **kwargs,
     ) -> SlurmJobMetadata:
         """
@@ -52,7 +52,7 @@ class SlurmAgent(AsyncAgentBase):
         # task_template.custom[]
         res = sctl.sbatch(dummy={})
 
-        return SlurmJobMetadata(sjob_id=res["job_id"])
+        return SlurmJobMetadata(sjob_id=res.job_id)
 
     def get(self, resource_meta: SlurmJobMetadata, **kwargs) -> Resource:
         """
@@ -60,7 +60,7 @@ class SlurmAgent(AsyncAgentBase):
         can't write the structured dataset to the output location, so it returns the output literals to the propeller,
         and the propeller will write the structured dataset to the blob store.
         """
-        sjob_id = resource_meta["sjob_id"]
+        sjob_id = resource_meta.sjob_id
         
         res = sctl.show_job(job_id=sjob_id)
 

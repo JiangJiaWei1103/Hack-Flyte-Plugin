@@ -15,8 +15,8 @@ from typing import Any, Dict
 SLURMQ = deque()
 
 # Define static time
-JOB_SUB_TIME = 3
-JOB_EXEC_TIME = 7 
+JOB_SUB_TIME = 1
+JOB_EXEC_TIME = 0.1
 
 
 class SlurmJobState(Enum):
@@ -34,7 +34,7 @@ class SlurmJob:
         self.job_id = job_id
 
         # Init job status
-        self.state = SlurmJobState.RUNNING
+        self.state = SlurmJobState.RUNNING.value
         self.start_time = process_time()
 
 
@@ -55,7 +55,7 @@ class SlurmCtl:
 
         # Create a job
         job = SlurmJob(
-            job_id=self.n_jobs,
+            job_id=self._n_jobs,
         )
         self._job_map[self._n_jobs] = job
 
@@ -73,11 +73,11 @@ class SlurmCtl:
         # Calculate elapsed time and update the job state 
         elapsed_time = process_time() - job.start_time
         if elapsed_time > JOB_EXEC_TIME:
-            job.state = SlurmJobState.DONE
+            job.state = SlurmJobState.DONE.value
 
         # Generate response
         res = {
-            "elpased_time": elapsed_time,
+            "elapsed_time": elapsed_time,
             "state": job.state
         }
 

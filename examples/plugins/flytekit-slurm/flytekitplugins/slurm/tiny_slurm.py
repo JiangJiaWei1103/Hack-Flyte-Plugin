@@ -2,13 +2,11 @@
 Test slurm agent.
 
 Just use a very simple use case to see how an agent works.
-
-* [ ] Survey a potential bug of `get_agent_secret`
 """
 import os
 
 from flytekit import workflow
-from task import SlurmTask
+from flytekitplugins.slurm import SlurmTask
 
 
 class CFG:
@@ -22,7 +20,8 @@ slurm_tiny_job = SlurmTask(
 
 
 @workflow
-def hi_slurm(dummy: str) -> str:
+def hi_slurm(dummy: str) -> float:
+    """Return the elapsed time of a naive slurm job."""
     res = slurm_tiny_job(dummy=dummy)
 
     return res
