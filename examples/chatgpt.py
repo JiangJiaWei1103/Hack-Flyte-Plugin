@@ -1,18 +1,48 @@
 """
 Test ChatGPT agent.
 
-* [ ] Make it work
+---
+Executor: SyncAgentExecutorMixin
+Parent task: PythonTask
+---
 """
-from flytekitplugins.chatgpt import ChatGPTTask
+import os
+
+from flytekit import task, workflow
+from flytekitplugins.openai import ChatGPTTask
 
 
-chatgpt_task = ChatGPTTask(
-    name="chatgpt",
-    config={
-        "openai_organization": "org-NayNG68kGnVXMJ8Ak4PMgQv7",
-        "chatgpt_conf": {
-            "model": "gpt-3.5-turbo",
-            "temperature": 0.7,
-        },
-    },
+MODEL = "gpt-3.5-turbo"
+TEMP = 0.1
+
+
+chatgpt_chat = ChatGPTTask(
+    name="tiny-chat",
+    openai_organization=os.environ["OPENAI_ORG"],
+    chatgpt_config={
+        "model": MODEL,
+        "temperature": TEMP
+    }
 )
+
+
+@task
+def add_role(model: str, msg: str) -> str:
+    return f"{model}: {msg}"
+    
+
+
+@workflow
+def chat(message: str) -> str:
+    res = chatgpt_chat(message=message)
+    res = add_role(model=MODEL, msg=res)
+
+    return res
+
+
+if __name__ == "__main__":
+    print(f"Test ChatGPTTask...\n")
+
+    msg = "Hi there!"
+    print(f"User: {msg}")
+    print(chat(message=msg))
