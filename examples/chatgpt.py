@@ -5,6 +5,13 @@ Test ChatGPT agent.
 Executor: SyncAgentExecutorMixin
 Parent task: PythonTask
 ---
+
+## Some tmp notes
+* For OpenAI org, see https://platform.openai.com/settings/organization/general
+* For model selection, see https://platform.openai.com/docs/models
+* For chatgpt_config, see https://platform.openai.com/docs/api-reference/chat/create
+* Remember to set env var FLYTE_OPENAI_API_KEY, for generating api key, see
+    https://platform.openai.com/settings/organization/general
 """
 import os
 
